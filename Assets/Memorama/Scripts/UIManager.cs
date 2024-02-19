@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]  GameObject gameUI;
     [SerializeField]  GameObject winUI;
     [SerializeField]  GameObject[] fireWorks;
+    [SerializeField]  GameObject cards;
+
     [Header("Scripts")]
     [SerializeField]  Main main;
 
@@ -26,6 +28,7 @@ public class UIManager : MonoBehaviour
         gameUI.SetActive(true);
         winUI.SetActive(false);
 
+        cards.SetActive(true);
         main.StartMemorama();
     }
     public void GoWin()

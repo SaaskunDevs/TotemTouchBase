@@ -124,11 +124,13 @@ public class Main : MonoBehaviour
 
     public void CheckItems()
     {
+        if (waitForCheck)
+            return;
        // canSelect = true;
         if (selected != 2)
             return;
         waitForCheck = true;
-//        Debug.Log("Check items");
+        Debug.Log("Check items");
         StartCoroutine(DelayToCheck());
     }
 
