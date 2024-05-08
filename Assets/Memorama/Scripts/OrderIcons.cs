@@ -59,13 +59,13 @@ public class OrderIcons : MonoBehaviour
         for (int i = 0; i < size; i++)
         {
             // Crear icono 2D
-            GameObject newIcon2D = Instantiate(iconPrefab2D, panel);
-            RectTransform rect = newIcon2D.GetComponent<RectTransform>();
+            //GameObject newIcon2D = Instantiate(iconPrefab2D, panel);
+            //RectTransform rect = newIcon2D.GetComponent<RectTransform>();
 
             //Ajustamos el tamaño del icono 2D
-            rect.sizeDelta = new Vector2(iconWidth, iconHeight);
+           // rect.sizeDelta = new Vector2(iconWidth, iconHeight);
 
-            rect.anchoredPosition = new Vector2(currentX, currentY);
+           // rect.anchoredPosition = new Vector2(currentX, currentY);
 
             // Crear icono 3D
             Icon newIcon3D = Instantiate(iconPrefab3D, panel3D);
