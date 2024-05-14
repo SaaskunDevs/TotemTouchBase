@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-    [SerializeField] public Icon[] icons;
     [SerializeField] public Texture2D[] imgs;
+
     [SerializeField] UIManager uiManager;
+    [SerializeField] SoundsManager sounds;
 
     private bool started;
     private bool waitForCheck;
@@ -28,13 +29,7 @@ public class Main : MonoBehaviour
     public int selected;
 
     private Icon item1, item2;
-
-    public int[] randomArray; // Arreglo de enteros aleatorios
-
-    private void Start()
-    {
-        //CreateIDs();
-    }
+    public bool differentImgs;
 
     private void Update()
     {
@@ -44,39 +39,6 @@ public class Main : MonoBehaviour
             UpdateTimeText();
         }
     }
-
-    public void CreateIDs(int size)
-    {
-        randomArray = CreateRandomArray(size);
-
-        for (int i = 0; i < randomArray.Length; i++)
-        {
-            icons[i].SetImage(randomArray[i], imgs[randomArray[i] - 1]);
-        }
-    }
-
-    private int[] CreateRandomArray(int size)
-    {
-        int[] array = new int[size];
-        List<int> availableNumbers = new List<int>();
-
-        for (int i = 1; i <= size / 2; i++)
-        {
-            availableNumbers.Add(i);
-            availableNumbers.Add(i);
-        }
-
-        for (int i = 0; i < size; i++)
-        {
-            int randomIndex = Random.Range(0, availableNumbers.Count);
-            array[i] = availableNumbers[randomIndex];
-            availableNumbers.RemoveAt(randomIndex);
-        }
-
-        return array;
-    }
-
-
 
     public void StartMemorama()
     {
@@ -143,13 +105,29 @@ public class Main : MonoBehaviour
  //           Debug.Log("tabien");
             item1.ParticlesAndDisable();
             item2.ParticlesAndDisable();
-            Score();
+            
             sizeBegin++;
+            Score();
+            sounds.CardDone();
             Debug.Log(sizeBegin + " / " + imgs.Length);
-            if (sizeBegin == imgs.Length)
+
+            if (differentImgs)
             {
-                Finalscore.text = score.ToString();
-                uiManager.GoWin();
+                if (sizeBegin == imgs.Length / 2)
+                {
+                    // Finalscore.text = score.ToString();
+                    started = false;
+                    uiManager.GoWin(Mathf.RoundToInt(timeToPlay-timeLeft).ToString() + " s.", timeToPlay - timeLeft);
+                }
+            }
+            if (!differentImgs)
+            {
+                if (sizeBegin == imgs.Length)
+                {
+                  //  Finalscore.text = score.ToString();
+                    started = false;
+                    uiManager.GoWin(Mathf.RoundToInt(timeToPlay - timeLeft).ToString() + " s.", timeToPlay - timeLeft);
+                }
             }
         }
         else
@@ -167,7 +145,7 @@ public class Main : MonoBehaviour
     void Score()
     {
         score += 100;
-        scoreTxt.text = score.ToString();
+        scoreTxt.text = "Pares: " + sizeBegin + " / " + imgs.Length /2;
     }
     private void UpdateTimeText()
     {
@@ -178,16 +156,12 @@ public class Main : MonoBehaviour
         {
             Debug.Log("Tiempo agotado.");
             Finalscore.text = score.ToString();
-            uiManager.GoWin();
+            started = false;
+            uiManager.Loose();
         }
 
         int minutes = Mathf.FloorToInt(timeLeft / 60);
         int seconds = Mathf.FloorToInt(timeLeft % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-    }
-
-    public void Restart()
-    {
-
     }
 }
