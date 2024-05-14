@@ -36,6 +36,7 @@ public class Register : MonoBehaviour
         if(!registerExist)
         {
             uiManager.GoGame();
+            return;
         }
 
         //Si la variable esta declarada se le asigna el valor del inputField, si no se le asigna null

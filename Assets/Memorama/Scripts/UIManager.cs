@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]  GameObject cards;
 
     [Header("Scripts")]
-    [SerializeField]  Main main;
+    [SerializeField]  OrderIcons _orderIcons;
 
     [SerializeField] DBSend dbSend;
     [SerializeField] LeaderBoard leaderBoard;
@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
         winUI.SetActive(false);
 
         cards.SetActive(true);
-        main.StartMemorama();
+        _orderIcons.StartMemorama();
     }
 
     public void GoWin(string timeToWin, float time)

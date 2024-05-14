@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Icon : MonoBehaviour
 {
-    [SerializeField] private Main main;
+    [SerializeField] private OrderIcons _orderIcons;
     [SerializeField] private int itemID;
 
     [SerializeField] private Material originalMat;
@@ -87,7 +87,7 @@ public class Icon : MonoBehaviour
                 animationRunning = false;
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 isOpen = true;
-                main.CheckItems();
+                _orderIcons.CheckItems();
                 return;
             }
         }

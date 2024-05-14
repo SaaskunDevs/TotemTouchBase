@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 public class OrderIcons : MonoBehaviour
 {
@@ -30,16 +31,45 @@ public class OrderIcons : MonoBehaviour
     public Vector3 panelPosition;
     int i=0;
 
+    [Header ("Game")]
+    private bool started;
+    private bool waitForCheck;
+    public int selected;
+    
+    private Icon item1, item2;
+
+    [Header ("Sounds")]
+    public SoundsManager sounds;
+
+
+    [Header ("Score")]
+    public int timeToPlay = 60; // Tiempo en segundos
+    public TextMeshProUGUI timeText; // Texto para mostrar el tiempo restante
+    private float timeLeft; // Tiempo restante en segundos
+    public TextMeshProUGUI scoreTxt; // Texto para mostrar el score
+    public TextMeshProUGUI Finalscore;
+    private int score, sizeBegin;
+
+    [Header ("Scripts")]
+    public UIManager uiManager;
+
     void Start()
     {
        StructureMemory();
+       uiManager = FindObjectOfType<UIManager>();
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (started)
         {
-            ConfiguratonGame();
+            CheckTouches();
+            UpdateTimeText();
         }
+    }
+    public void StartMemorama()
+    {
+        timeLeft = timeToPlay;
+        started = true;
     }
 
     public void ConfiguratonGame()
@@ -208,4 +238,126 @@ public class OrderIcons : MonoBehaviour
         panel3D.transform.position = panelPosition;
         ConfiguratonGame();
     }
+
+    ////////////////////////Juego Estructura////////////////////////
+    void CheckTouches()
+    {
+        if (waitForCheck)
+            return;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // Realizar una prueba de colisi�n en la posici�n del clic
+            RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero, Mathf.Infinity);
+
+            if (hit.collider != null)
+            {
+                //Debug.Log("Collider " + hit.collider.name + " ha sido tocado");
+
+                Icon icn = hit.collider.GetComponent<Icon>();
+
+                if (icn.CanInteract())
+                {
+
+                    if (selected == 0)
+                    {
+                        item1 = icn;
+                        icn.UserClick();
+                        selected++;
+                    }
+                    else if (selected == 1)
+                    {
+                        item2 = icn;
+                        icn.UserClick();
+                        selected++;
+                    }
+                }
+                
+            }
+        }
+    }
+
+    public void CheckItems()
+    {
+        if (waitForCheck)
+            return;
+       // canSelect = true;
+        if (selected != 2)
+            return;
+        waitForCheck = true;
+        Debug.Log("Check items");
+        StartCoroutine(DelayToCheck());
+    }
+
+    IEnumerator DelayToCheck()
+    {
+        yield return new WaitForSeconds(1f);
+        Debug.Log("Check");
+        if (item1.GetID() == item2.GetID())
+        {
+ //           Debug.Log("tabien");
+            item1.ParticlesAndDisable();
+            item2.ParticlesAndDisable();
+            
+            sizeBegin++;
+            Score();
+            sounds.CardDone();
+            Debug.Log(sizeBegin + " / " + imgs.Length);
+
+            if (differentImgs)
+            {
+                if (sizeBegin == imgs.Length / 2)
+                {
+                    // Finalscore.text = score.ToString();
+                    started = false;
+                    uiManager.GoWin(Mathf.RoundToInt(timeToPlay-timeLeft).ToString() + " s.", timeToPlay - timeLeft);
+                }
+            }
+            if (!differentImgs)
+            {
+                if (sizeBegin == imgs.Length)
+                {
+                  //  Finalscore.text = score.ToString();
+                    started = false;
+                    uiManager.GoWin(Mathf.RoundToInt(timeToPlay - timeLeft).ToString() + " s.", timeToPlay - timeLeft);
+                }
+            }
+        }
+        else
+        {
+  //          Debug.Log("Tamal");
+            item1.ReturnAnim();
+            item2.ReturnAnim();
+        }
+
+        yield return new WaitForSeconds(0.21f);
+        selected = 0;
+        waitForCheck = false;
+    }
+
+    void Score()
+    {
+        score += 100;
+        scoreTxt.text = "Pares: " + sizeBegin + " / " + imgs.Length /2;
+    }
+    private void UpdateTimeText()
+    {
+        timeLeft -= Time.deltaTime;
+
+
+        if (timeLeft <= 0)
+        {
+            Debug.Log("Tiempo agotado.");
+            Finalscore.text = score.ToString();
+            started = false;
+            uiManager.Loose();
+        }
+
+        int minutes = Mathf.FloorToInt(timeLeft / 60);
+        int seconds = Mathf.FloorToInt(timeLeft % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    /////////////////////// Juego Estructura////////////////////////
+    
 }
