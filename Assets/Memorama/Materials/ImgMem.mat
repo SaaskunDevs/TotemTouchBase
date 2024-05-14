@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ImgMem
-  m_Shader: {fileID: -6465566751694194690, guid: 9f1aa43e8c9feed49b7bb980fda0dc3a, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 8e84abe832c41764f8e3f5d3f7404113, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,11 +29,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BackImg:
-        m_Texture: {fileID: 2800000, guid: ee94141a241e26c4e945c57b361e909c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 70d8ef39d7e449c45b55219e2a4133e6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FrontImg:
-        m_Texture: {fileID: 2800000, guid: 723cb530d0d268a4d800d2f2ec80c48a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 00daaa86d68936b4a848abac9c66780e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -74,6 +74,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Vector2: {r: -1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &4301538238949328235
