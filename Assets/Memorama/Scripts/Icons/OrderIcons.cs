@@ -11,36 +11,37 @@ public class OrderIcons : MonoBehaviour
     public GameObject panel3D; // RectTransform para los iconos 3D
     
     [Header ("VariablesIcons")]
-    public bool differentImgs = false;
-    public float paddingX = 10f;
-    public float paddingY = 10f;
-    public float iconWidth = 1.5f;
-    public float iconHeight = 1.5f;
-    int size;
+    public bool differentImgs = false; // Variable para saber si las imagenes son diferentes o iguales
+    public float paddingX = 10f; // Espaciado horizontal entre los iconos
+    public float paddingY = 10f; // Espaciado vertical entre los iconos
+    public float iconWidth = 1.5f; // Ancho de los iconos
+    public float iconHeight = 1.5f; // Alto de los iconos
+    int size; // Tamaño de la lista de imagenes para asiganlas a los iconos
 
     //Arrays
-    public Texture2D[] imgs;
+    public Texture2D[] imgs; // Arreglo de texturas para los iconos
     int[] randomArray; // Arreglo de enteros aleatorios
-    public List<Icon> iconosList = new List<Icon>();
-    public List<Vector3> positions = new List<Vector3>();
+    public List<Icon> iconosList = new List<Icon>(); // Lista de iconos
+    public List<Vector3> positions = new List<Vector3>(); // Lista de posiciones de los iconos
     //Arrays
 
     [Header ("PanelConfiguration")]
-    public float rows;
-    public float columns;
-    public Vector3 panelPosition;
-    int i=0;
+    public float rows; // Filas del panel
+    public float columns; // Columnas del panel
+    public Vector3 panelPosition; // Posición del panel en el mundo
+    int i=0; // Contador para el foreach de los iconos
 
     [Header ("Game")]
-    private bool started;
-    private bool waitForCheck;
-    public int selected;
-    
-    private Icon item1, item2;
+    private bool started; // Variable para saber si el juego ha comenzado
+    private bool waitForCheck; // Variable para saber si se está esperando a comprobar los ítems seleccionados
+    public int selected; // Variable para saber cuántos ítems se han seleccionado
+    private Icon item1, item2; // Variables para guardar los ítems seleccionados
 
     [Header ("Sounds")]
     public SoundsManager sounds;
-
+    
+    [Header ("Scripts")]
+    public UIManager uiManager;
 
     [Header ("Score")]
     public int timeToPlay = 60; // Tiempo en segundos
@@ -49,9 +50,6 @@ public class OrderIcons : MonoBehaviour
     public TextMeshProUGUI scoreTxt; // Texto para mostrar el score
     public TextMeshProUGUI Finalscore;
     private int score, sizeBegin;
-
-    [Header ("Scripts")]
-    public UIManager uiManager;
 
     void Start()
     {
@@ -85,6 +83,9 @@ public class OrderIcons : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Método para ajustar la posición de los iconos en el panel
+    /// </summary>
     void AreaCheck(int size)
     {
         positions.Clear();
@@ -138,6 +139,9 @@ public class OrderIcons : MonoBehaviour
         CreateIDs(size);
     }
 
+    /// <summary>
+    /// Método para crear los IDs de los iconos
+    /// </summary>
     public void CreateIDs(int size)
     {
         if (differentImgs) 
@@ -233,13 +237,20 @@ public class OrderIcons : MonoBehaviour
         return array;
     }
 
+    /// <summary>
+    /// Método para reorganizar los iconos
+    /// </summary>
     public void StructureMemory()
     {
         panel3D.transform.position = panelPosition;
         ConfiguratonGame();
     }
 
-    ////////////////////////Juego Estructura////////////////////////
+                                                    //////////////////////// Estructura del Juego ////////////////////////
+
+    /// <summary>
+    /// Método para verificar los toques a los iconos
+    /// </summary>
     void CheckTouches()
     {
         if (waitForCheck)
@@ -248,13 +259,11 @@ public class OrderIcons : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // Realizar una prueba de colisi�n en la posici�n del clic
+
             RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero, Mathf.Infinity);
 
             if (hit.collider != null)
             {
-                //Debug.Log("Collider " + hit.collider.name + " ha sido tocado");
-
                 Icon icn = hit.collider.GetComponent<Icon>();
 
                 if (icn.CanInteract())
@@ -278,11 +287,14 @@ public class OrderIcons : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Método para verificar los ítems seleccionados
+    /// </summary>
     public void CheckItems()
     {
         if (waitForCheck)
             return;
-       // canSelect = true;
+
         if (selected != 2)
             return;
         waitForCheck = true;
@@ -290,13 +302,15 @@ public class OrderIcons : MonoBehaviour
         StartCoroutine(DelayToCheck());
     }
 
+    /// <summary>
+    /// Método donde comprobamos si los ítems seleccionados son iguales
+    /// </summary>
     IEnumerator DelayToCheck()
     {
         yield return new WaitForSeconds(1f);
         Debug.Log("Check");
         if (item1.GetID() == item2.GetID())
         {
- //           Debug.Log("tabien");
             item1.ParticlesAndDisable();
             item2.ParticlesAndDisable();
             
@@ -309,7 +323,6 @@ public class OrderIcons : MonoBehaviour
             {
                 if (sizeBegin == imgs.Length / 2)
                 {
-                    // Finalscore.text = score.ToString();
                     started = false;
                     uiManager.GoWin(Mathf.RoundToInt(timeToPlay-timeLeft).ToString() + " s.", timeToPlay - timeLeft);
                 }
@@ -318,7 +331,6 @@ public class OrderIcons : MonoBehaviour
             {
                 if (sizeBegin == imgs.Length)
                 {
-                  //  Finalscore.text = score.ToString();
                     started = false;
                     uiManager.GoWin(Mathf.RoundToInt(timeToPlay - timeLeft).ToString() + " s.", timeToPlay - timeLeft);
                 }
@@ -326,7 +338,6 @@ public class OrderIcons : MonoBehaviour
         }
         else
         {
-  //          Debug.Log("Tamal");
             item1.ReturnAnim();
             item2.ReturnAnim();
         }
@@ -336,11 +347,18 @@ public class OrderIcons : MonoBehaviour
         waitForCheck = false;
     }
 
+    /// <summary>
+    /// Método para obtener el score
+    /// </summary>
     void Score()
     {
         score += 100;
         scoreTxt.text = "Pares: " + sizeBegin + " / " + imgs.Length /2;
     }
+    
+    /// <summary>
+    /// Método mostrar el tiempo restante de juego
+    /// </summary>
     private void UpdateTimeText()
     {
         timeLeft -= Time.deltaTime;
@@ -348,7 +366,7 @@ public class OrderIcons : MonoBehaviour
 
         if (timeLeft <= 0)
         {
-            Debug.Log("Tiempo agotado.");
+            // Debug.Log("Tiempo agotado.");
             Finalscore.text = score.ToString();
             started = false;
             uiManager.Loose();
@@ -358,6 +376,6 @@ public class OrderIcons : MonoBehaviour
         int seconds = Mathf.FloorToInt(timeLeft % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
-    /////////////////////// Juego Estructura////////////////////////
+                                                    /////////////////////// Estructura del Juego ////////////////////////
     
 }
