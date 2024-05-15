@@ -55,7 +55,7 @@ public class Register : MonoBehaviour
 
         //Siempre tener la instancia de la clase UsersLoad para poder guardar los datos
         Debug.Log("Datos correctos");
-        UsersLoad user = uiManager.UserDataInstance;
+        UsersLoad user = main.UserDataInstance;
         user.name = name;
         user.email = email;
         user.phoneNumber = int.TryParse(phone, out int phoneNumber) ? phoneNumber : 0;

@@ -11,16 +11,14 @@ public class UIManager : MonoBehaviour
     [SerializeField]  GameObject instructionsUI;
     [SerializeField]  GameObject gameUI;
     [SerializeField]  GameObject winUI;
-    [SerializeField]  GameObject[] fireWorks;
     [SerializeField]  GameObject cards;
+    [SerializeField] TextMeshProUGUI scoreText;
 
     [Header("Scripts")]
     [SerializeField]  OrderIcons _orderIcons;
-
-    [SerializeField] DBSend dbSend;
-    [SerializeField] LeaderBoard leaderBoard;
-    [SerializeField] TextMeshProUGUI scoreText;
+    
     [SerializeField] SoundsManager sounds;
+    [SerializeField] Main main;
     public void GoMenu()
     {
         menuUI.SetActive(true);
@@ -51,7 +49,7 @@ public class UIManager : MonoBehaviour
     public void GoWin(string timeToWin, float time)
     {
         scoreText.text = timeToWin;
-        UserDataInstance.scorePlayer = time;
+        main.UserDataInstance.scorePlayer = time;
         Debug.Log("win");
         StartCoroutine(DelayWin());
     }
@@ -67,7 +65,7 @@ public class UIManager : MonoBehaviour
         menuUI.SetActive(false);
         gameUI.SetActive(false);
         winUI.SetActive(true);
-        StoreData();
+        main.StoreData();
         sounds.Finish();
 
     }
@@ -87,22 +85,4 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public UsersLoad UserDataInstance = new UsersLoad();
-    public void StoreData()
-    {
-        //UserData userData = checkResult.UserDataInstance;
-        string name = UserDataInstance.name;
-        string email = UserDataInstance.email;
-        float scoreFF = UserDataInstance.scorePlayer;
-
-        Debug.Log("Nombre: " + name + " Email: " + email + " Score: " + scoreFF);
-        //nameText.text = name;
-        //scoreText.text = scoreFF.ToString();
-        dbSend.WriteIntoDB(name, email, scoreFF);
-    }
-
-    public void resetGame()
-    {
-        SceneManager.LoadScene(0);
-    }
 }
